@@ -1,12 +1,17 @@
 import React, {useState, useEffect, ChangeEvent} from "react";
 import {Link, useNavigate } from 'react-router-dom';
 import {Box, Grid, Typography, TextField, Button} from '@mui/material';
-import useLocalStorage from "react-use-localstorage";
 import UserLogin from "../../models/UserLogin";
 import { login } from "../../services/Service";
+import { useDispatch } from "react-redux";
+import { addToken, addId } from "../../store/tokens/Actions";
+import { toast } from 'react-toastify';
 import './Login.css'
 
 function Login(){
+
+    const dispatch = useDispatch();
+    const [token, setToken] = useState('')
 
     const [userLogin, setUserLogin] = useState<UserLogin>({
         id:0,
@@ -15,38 +20,72 @@ function Login(){
         senha:'',
         foto:'',
         token:''
-    })
+    });
+    const [respUserLogin, setRespUserLogin] = useState<UserLogin>({
+        id: 0,
+        nome: '',
+        usuario: '',
+        senha: '',
+        foto: '',
+        token: '',
+      });
+    
 
     let navigate = useNavigate();
-    const [token,setToken] = useLocalStorage('token');
+
 
 
     function updateModel(event:ChangeEvent<HTMLInputElement>){
         setUserLogin({
             ...userLogin,
-            [event.target.name]: event.target.value
-        })
+            [event.target.name]: event.target.value,
+        });
     }
 
-    async function logar(event:ChangeEvent<HTMLFormElement>){
+    async function logar(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
-        try{
-            await login (`/usuarios/logar`,userLogin, setToken)
-
-            alert('Usuário logado com sucesso!');
-        }catch(error){
-            alert('Dados do usuário inconsistentes. Erro ao logar! ');
+        try {
+          await login('/usuarios/logar', userLogin, setRespUserLogin);
+          toast.info('Usuário logado com sucesso', {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",});
+        } catch (error) {
+          toast.error('Dados do usuário incorretos. Tente novamente !', {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",});
         }
-    }
+      }
 
-    useEffect(()=>{
-        if(token !== ''){
-            navigate('/home')
+      useEffect(() => {
+        if (token !== '') {
+          dispatch(addToken(token))
+          navigate('/home');
         }
-    },[token]);
+      }, [token]);
+
+      useEffect(() => {
+        if(respUserLogin.token !== ''){
+            dispatch(addToken(respUserLogin.token))
+            dispatch(addId(respUserLogin.id.toString()))
+            navigate('/home');
+        }
+      }, [respUserLogin.token])
+    
 
     return (
-<Grid container direction='row' justifyContent='center' alignItems='center'>
+          <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid alignItems='center' xs={6}>
                 <Box paddingX={20}>
                     <form onSubmit={logar}>

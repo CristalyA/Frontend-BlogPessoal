@@ -5,6 +5,7 @@ import { cadastroUsuario } from '../../services/Service';
 import { Typography } from "@material-ui/core";
 import { Box, Button, Grid, TextField} from '@mui/material';
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import './CadastroUsuario.css'
 
 function CadastroUsuario() {
@@ -47,10 +48,38 @@ function CadastroUsuario() {
         if(confirmarSenha === user.senha &&user.senha.length >=3){
         try{
             await cadastroUsuario('/usuarios/cadastrar',user,setUserResult);
-            alert ("Usuário cadastrado com sucesso");
-        }catch (error){ alert ("Falha interna ao cadastrar");
+            toast.success('Usuario cadastrado com sucesso !', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "colored",
+                progress: undefined,
+            });
+        }catch (error){ 
+            toast.error('Falha ao cadastrar, tente novamente !', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "colored",
+                progress: undefined,
+            });
         }}else {
-            alert("As senhas não conferem.Favor verficar novamente!");
+            toast.error('As senhas não conferem, tente novamente !', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: "colored",
+                progress: undefined,
+            });
             setUser({...user,senha:''});
             setConfirmarSenha('');
         }

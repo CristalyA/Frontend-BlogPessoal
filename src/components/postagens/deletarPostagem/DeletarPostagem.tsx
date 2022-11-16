@@ -3,7 +3,9 @@ import {Typography, Button, Card , CardActions, CardContent } from '@material-ui
 import {Box} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import {buscaId, deleteId} from '../../../services/Service';
-import useLocalStorage from 'react-use-localstorage';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { TokenState } from '../../../store/tokens/TokensReducer';
 import Postagem from '../../../models/Postagem';
 import './DeletarPostagem.css';
 
@@ -13,15 +15,27 @@ import './DeletarPostagem.css';
 function DeletarPostagem(){
 let navigate = useNavigate();
 const {id} = useParams <{id:string}>();
-const [token, setToken] = useLocalStorage('token');
 const [post, setPost] = useState<Postagem> ();
+const token = useSelector<TokenState, TokenState["tokens"]>(
+  (state) => state.tokens
+);
 
-useEffect (()=>{
-  if(token === ''){
-    alert ("Você precisa estar logado")
-    navigate('/login')
+useEffect(() => {
+  if (token == "") {
+    toast.error('Você precisa estar logado', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      theme: "colored",
+      progress: undefined,
+  });
+      navigate("/login")
+
   }
-},[token])
+}, [token])
 
 useEffect (()=> {
   if(id !== undefined){
@@ -30,7 +44,7 @@ useEffect (()=> {
 }, [id])
 
 async function findById(id:string) {
-  buscaId(`/postagens${id}`,setPost,{
+  buscaId(`/postagens/${id}`,setPost,{
     headers:{
       'Authorization': token
     }
@@ -45,7 +59,16 @@ function sim (){
       'Authorization': token
     }
   });
-  alert ('Postagem deletado com sucesso')
+  toast.success('Postagem deletada com sucesso !',{
+    position:'top-right',
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: false,
+    theme: 'colored',
+    progress:undefined,
+});
 }
 
 function nao(){

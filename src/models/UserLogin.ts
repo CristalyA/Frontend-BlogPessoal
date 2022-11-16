@@ -1,3 +1,5 @@
+import Postagem from './Postagem';
+
 interface UserLogin{
     
     id:number;
@@ -5,7 +7,7 @@ interface UserLogin{
     usuario: string;
     senha: string;
     foto: string;
-    token?: string| null;
+    token: string;
 }
 
 export default UserLogin

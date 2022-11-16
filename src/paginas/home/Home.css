@@ -2,7 +2,7 @@
     background-color: #3F51B5;
 }
 .titulo{
-    color: white !important; 
+    color: black !important; 
     font-weight: bold; 
 }
 .botao{
@@ -12,4 +12,7 @@
 }
 .postagens{
     background-color: color;
+}
+.text-decorator-none{
+    text-decoration: none;
 }

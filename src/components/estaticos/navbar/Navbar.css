@@ -1,6 +1,6 @@
 .cursor{
     cursor: pointer;
-    color:white
+    color:black !important;
 }
 .text-decorator-none{
     text-decoration: none;
